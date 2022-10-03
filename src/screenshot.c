@@ -28,14 +28,8 @@ static void screenshot_disp_flush(int32_t x1, int32_t y1, int32_t x2, int32_t y2
     uint16_t tga_img_head[5] = {0,0,width,height,0x2820};
     fwrite(tga_img_head,1,10,tga_file);
 
-    /* Write image data - need to reorder r/g/b bytes so do it in a loop */
-    for(int i = 0; i < (height*width);i++)
-    {
-        /* Translate pixel from BGRA to RGBA */
-        lv_color_t pixel = color[i];
-        uint8_t tga_pix[4] = {pixel.red,pixel.green,pixel.blue,pixel.alpha};
-        fwrite(tga_pix,1,4,tga_file);
-    }
+    /* Write image data - bytes are already in the right order (BGRA) */
+    fwrite(color,1,4*height*width,tga_file);
 
     /* callback when done flushing */
 	lv_flush_ready();
